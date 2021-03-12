@@ -1,0 +1,73 @@
+---
+# tasks file for git.role
+- name: update cache
+  yum: update_cache=yes
+- name: add epel release
+  yum:
+    name: epel-release
+    state: latest
+- name: get git repo
+  git:
+    repo: 'https://github.com/git/git.git'
+    dest: /home/{{ ansible_ssh_user }}/git
+    version: v2.30.1
+  tags:
+    - git-repo
+- name: add git
+  yum:
+    name: git
+    state: latest
+  tags: add_git
+- name: install all packages
+  yum:
+    name: "{{ packages }}"
+  vars:
+    packages:
+      - "@Development tools"
+      - gettext-devel
+      - curl-devel
+      - perl-CPAN
+      - perl-devel
+      - openssl-devel
+      - zlib-devel
+    tags:
+      - package
+- name: make configure
+  shell: cd git && make configure
+  tags:
+    - make_config
+- name: set configure
+  shell: cd git && ./configure --prefix=/usr/local
+  tags:
+    - configure
+- name: Get nproc
+  shell: nproc
+  register: core_number
+  tags:
+    - get_nproc
+- name: Get core number
+  debug:
+    msg="{{ core_number.stdout }}"
+  tags:
+    - ncore
+- name: Compile git
+  shell: cd git && make -j{{ core_number.stdout }}
+  tags:
+    - compile
+- name: install git
+  shell: cd git && make install
+  tags:
+    - install
+- name: remove old git
+  yum:
+    name: git
+    state: absent
+  tags:
+    - remove_git
+- name: add the path to /usr/local/bin
+  blockinfile:
+    path: /home/{{ ansible_ssh_user }}/.bash_profile
+    block: |
+      export PATH=$PATH:/usr/local/bin
+  tags:
+    - path

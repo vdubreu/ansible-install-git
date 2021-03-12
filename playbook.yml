@@ -1,0 +1,7 @@
+---
+- name: install git latest version
+  hosts: centos_remote_a
+  become: true
+  roles:
+    - {role: git.role}
+
