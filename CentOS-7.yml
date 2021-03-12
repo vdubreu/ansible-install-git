@@ -1,0 +1,11 @@
+---
+git_packages:
+  - epel-release
+  - git
+  - "@Development tools"
+  - gettext-devel
+  - curl-devel
+  - perl-CPAN
+  - perl-devel
+  - openssl-devel
+  - zlib-devel

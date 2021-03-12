@@ -1,0 +1,10 @@
+---
+- name: fichier de variables pour centos
+  include_vars: " {{ ansible_distribution }}-{{ ansible_distribution_version.split('.')[0] }}.yml "
+  when: ansible_distribution == "CentOS"
+- name: fichier de variables pour alpine
+  include_vars: " {{ ansible_distribution }}-{{ ansible_distribution_version.split('.')[0] }}.yml "
+  when: ansible_distribution == "Alpine"
+- name: fichier de variables pour ubuntu
+  include_vars: " {{ ansible_distribution }}-{{ ansible_distribution_version.split('.')[0] }}.yml "
+  when: ansible_distribution == "Ubuntu"
